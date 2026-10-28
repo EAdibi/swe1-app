@@ -1,0 +1,31 @@
+language: python
+dist: jammy
+python:
+  - "3.12"
+
+# Dev-only tools are installed here instead of requirements.txt,
+# so Elastic Beanstalk doesn't install them on the server.
+install:
+  - pip install -r requirements.txt
+  - pip install black flake8 coverage coveralls
+
+# Any failing command here turns the build red, and deploy is skipped.
+script:
+  - black --check .
+  - flake8 .
+  - coverage run manage.py test
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: elasticbeanstalk
+  edge: true
+  region: us-east-2
+  app: swe1-app
+  env: swe1-app-env
+  bucket: $AWS_EB_BUCKET
+  # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are read from
+  # Travis repository settings (hidden), never stored in this file.
+  on:
+    branch: main
