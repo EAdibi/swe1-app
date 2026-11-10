@@ -45,4 +45,4 @@ def vote(request, question_id):
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
 import os
-   x=[1,2,3]
+x=[1,2,3]
